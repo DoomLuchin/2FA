@@ -19,8 +19,15 @@ namespace TwoFactorAuthenticationExample.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        public IActionResult Login(CurrentUser model)
         {
+            UserMock userMock = new UserMock();
+
+            if (model.Email != userMock.Email || model.Password != userMock.Password)
+            {
+                return Redirect("/");
+            }
+
             if (CurrentUser.PreviousUser != null)
             {
                 if (CurrentUser.PreviousUser.TwoFactorEnabled)
@@ -34,7 +41,7 @@ namespace TwoFactorAuthenticationExample.Controllers
             }
             else
             {
-                CurrentUser.SignedInUser = new CurrentUser { Email = "foo@bar.com", TwoFactorEnabled = false };
+                CurrentUser.SignedInUser = new CurrentUser { Email = model.Email, TwoFactorEnabled = false };
             }
 
             return Redirect("/");
@@ -45,11 +52,6 @@ namespace TwoFactorAuthenticationExample.Controllers
             CurrentUser.PreviousUser = CurrentUser.SignedInUser;
             CurrentUser.SignedInUser = null;
             return Redirect("/");
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

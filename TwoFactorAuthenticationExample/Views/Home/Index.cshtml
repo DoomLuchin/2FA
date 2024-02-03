@@ -1,25 +1,46 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model CurrentUser
+
+@{
+    ViewData["Title"] = "2FA";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Login</h1>
-
-    @if (CurrentUser.SignedInUser == null)
+@if (CurrentUser.SignedInUser == null)
+{
+    @using (Html.BeginForm("Login", "Home"))
     {
-        <a href="/home/login">Sign in</a>
+        <div class="text-center">
+
+            <h1>Login</h1>
+
+            <div>
+                @Html.TextBoxFor(m => m.Email, new { placeholder = "Email" })
+            </div>
+            <div>
+                @Html.PasswordFor(m => m.Password, new { placeholder = "Password" })
+            </div>
+
+            <div>
+                <input type="submit" />
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="text-center">
+        <h1>Bienvenido</h1>
+    </div>
+
+    <br />
+    <a href="/home/logout">Sign out</a>
+    <br />
+
+    @if (CurrentUser.SignedInUser.TwoFactorEnabled)
+    {
+        <a href="/twofactorauthentication/disable">Disable two-factor</a>
     }
     else
     {
-        <a href="/home/logout">Sign out</a><br/>
-
-        @if (CurrentUser.SignedInUser.TwoFactorEnabled)
-        {
-            <a href="/twofactorauthentication/disable">Disable two-factor</a>
-        }
-        else
-        {
-            <a href="/twofactorauthentication/enable">Enable two-factor</a>
-        }
+        <a href="/twofactorauthentication/enable">Enable two-factor</a>
     }
-</div>
+}

@@ -9,5 +9,7 @@
         public string Email { get; set; }
 
         public bool TwoFactorEnabled { get; set; }
+
+        public string Password { get; set; }
     }
 }
